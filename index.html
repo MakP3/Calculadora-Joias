@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Calculadora de Joias</title>
+
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f4f6;
+    margin: 0;
+    padding: 20px;
+    color: #222;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 15px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+.titulo {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 18px;
+    color: #444;
+}
+
+label {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+}
+
+input,
+select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.resultado {
+    background: #e8f5e9;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+.valor {
+    font-size: 24px;
+    font-weight: bold;
+    color: #176b35;
+    margin-top: 5px;
+}
+
+.separador {
+    height: 1px;
+    background: #ddd;
+    margin: 20px 0;
+}
+
+.observacao {
+    color: #777;
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+<h1>💍 Calculadora de Joias</h1>
+
+
+<!-- ========================= -->
+<!-- CÁLCULO DA PEÇA -->
+<!-- ========================= -->
+
+<div class="card">
+
+<div class="titulo">
+📐 Cálculo da peça
+</div>
+
+
+<label>Material</label>
+
+<select id="material">
+
+<option value="prata925">
+Prata 925
+</option>
+
+<option value="prata950">
+Prata 950
+</option>
+
+<option value="ouro18">
+Ouro 18k
+</option>
+
+</select>
+
+
+<label>Largura (mm)</label>
+
+<input
+type="number"
+id="largura"
+value="3"
+step="0.01">
+
+
+<label>Comprimento (mm)</label>
+
+<input
+type="number"
+id="comprimento"
+value="2"
+step="0.01">
+
+
+<label>Espessura (mm)</label>
+
+<input
+type="number"
+id="espessura"
+value="1"
+step="0.01">
+
+
+<label>Preço por grama</label>
+
+<input
+type="number"
+id="preco"
+step="0.01">
+
+
+<div class="resultado">
+
+<div>Peso da peça</div>
+
+<div
+class="valor"
+id="peso">
+0,000 g
+</div>
+
+
+<div class="separador"></div>
+
+
+<div>Valor da peça</div>
+
+<div
+class="valor"
+id="valor">
+R$ 0,00
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- CÁLCULO DA LIGA -->
+<!-- ========================= -->
+
+<div class="card">
+
+<div class="titulo">
+⚗️ Cálculo da liga
+</div>
+
+
+<label>Peso final desejado (g)</label>
+
+<input
+type="number"
+id="pesoLiga"
+value="100"
+step="0.001">
+
+
+<label>Teor desejado</label>
+
+<select id="teor">
+
+<option value="925">
+Prata 925
+</option>
+
+<option value="950">
+Prata 950
+</option>
+
+<option value="999">
+Prata 999
+</option>
+
+<option value="750">
+Ouro 18k
+</option>
+
+</select>
+
+
+<div class="resultado">
+
+<div>Metal puro necessário</div>
+
+<div
+class="valor"
+id="metalPuro">
+0,000 g
+</div>
+
+
+<div class="separador"></div>
+
+
+<div>Metal de liga necessário</div>
+
+<div
+class="valor"
+id="metalLiga">
+0,000 g
+</div>
+
+</div>
+
+
+<div class="observacao">
+
+O cálculo da liga considera o teor informado.
+Os fatores de densidade usados no cálculo da peça
+não são alterados.
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+
+/* =========================
+   FATORES DE DENSIDADE
+   NÃO ALTERAR
+   ========================= */
+
+const fatores = {
+
+    prata925: 0.01036,
+
+    prata950: 0.01038,
+
+    ouro18: 0.0155
+
+};
+
+
+/* =========================
+   PREÇOS
+   ========================= */
+
+const precos = {
+
+    prata925: 5,
+
+    prata950: 5.5,
+
+    ouro18: 400
+
+};
+
+
+/* =========================
+   CÁLCULO DA PEÇA
+   ========================= */
+
+function calcularPeca() {
+
+    const material =
+        document.getElementById("material").value;
+
+
+    const largura =
+        Number(document.getElementById("largura").value);
+
+
+    const comprimento =
+        Number(document.getElementById("comprimento").value);
+
+
+    const espessura =
+        Number(document.getElementById("espessura").value);
+
+
+    const preco =
+        precos[material];
+
+
+    /*
+       Coloca automaticamente
+       o preço correspondente
+       ao material escolhido.
+    */
+
+    document.getElementById("preco").value =
+        preco;
+
+
+    /*
+       Cálculo do peso.
+
+       Os fatores permanecem
+       exatamente como definidos acima.
+    */
+
+    const peso =
+        largura *
+        comprimento *
+        espessura *
+        fatores[material];
+
+
+    /*
+       Valor da peça.
+    */
+
+    const valor =
+        peso * preco;
+
+
+    document.getElementById("peso").innerText =
+
+        peso.toFixed(3)
+        .replace(".", ",")
+        + " g";
+
+
+    document.getElementById("valor").innerText =
+
+        "R$ " +
+        valor.toFixed(2)
+        .replace(".", ",");
+
+}
+
+
+/* =========================
+   CÁLCULO DA LIGA
+   ========================= */
+
+function calcularLiga() {
+
+
+    const peso =
+        Number(
+            document.getElementById("pesoLiga").value
+        );
+
+
+    const teor =
+        Number(
+            document.getElementById("teor").value
+        );
+
+
+    /*
+       Quantidade de metal puro.
+    */
+
+    const metalPuro =
+        peso * teor / 1000;
+
+
+    /*
+       O restante será
+       considerado metal de liga.
+    */
+
+    const metalLiga =
+        peso - metalPuro;
+
+
+    document.getElementById("metalPuro").innerText =
+
+        metalPuro.toFixed(3)
+        .replace(".", ",")
+        + " g";
+
+
+    document.getElementById("metalLiga").innerText =
+
+        metalLiga.toFixed(3)
+        .replace(".", ",")
+        + " g";
+
+}
+
+
+/* =========================
+   ATUALIZAÇÃO AUTOMÁTICA
+   ========================= */
+
+document
+.getElementById("material")
+.addEventListener("change", calcularPeca);
+
+
+document
+.getElementById("largura")
+.addEventListener("input", calcularPeca);
+
+
+document
+.getElementById("comprimento")
+.addEventListener("input", calcularPeca);
+
+
+document
+.getElementById("espessura")
+.addEventListener("input", calcularPeca);
+
+
+document
+.getElementById("preco")
+.addEventListener("input", calcularPeca);
+
+
+document
+.getElementById("pesoLiga")
+.addEventListener("input", calcularLiga);
+
+
+document
+.getElementById("teor")
+.addEventListener("change", calcularLiga);
+
+
+/* =========================
+   INICIA OS CÁLCULOS
+   ========================= */
+
+calcularPeca();
+
+calcularLiga();
+
+</script>
+
+</body>
+
+</html>
